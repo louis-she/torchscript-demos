@@ -1,0 +1,10 @@
+alchemistic_directory
+*.pyc
+.vscode
+*.pth
+./data
+build
+data
+*.zip
+libtorch
+opencv
