@@ -1,6 +1,6 @@
-# torchscript-mnist
+# torchscript-demos
 
-A brief of TorchScript by MNIST.
+A brief of TorchScript by MNIST and YOLOv5.
 
 ## Requirements
 
@@ -25,8 +25,8 @@ This guide will cover the part of the LibTorch and OpenCV installation and assum
 1. Clone this repo.
 
 ```bash
-git clone https://github.com/louis-she/torchscript-mnist.git
-cd torchscript-mnist
+git clone https://github.com/louis-she/torchscript-demos.git
+cd torchscript-demos
 ```
 
 2. Install OpenCV
@@ -47,7 +47,17 @@ wget https://download.pytorch.org/libtorch/nightly/cpu/libtorch-shared-with-deps
 unzip libtorch-shared-with-deps-latest.zip
 ```
 
-## Training
+4. Clone YOLOv5(Optional)
+
+> Required if you want to try the YOLOv5 example.
+
+```bash
+git clone https://github.com/ultralytics/yolov5
+```
+
+## MNIST
+
+**1. Training**
 
 ```bash
 # In repo base dir
@@ -56,7 +66,7 @@ python3 train.py
 
 Use `ctrl + C` to stop training process, the training log and graphs can be found at `./alchemistic_directory/baseline`.
 
-## Build C++ binary
+**2. Build binary**
 
 ```bash
 # In repo base dir
@@ -66,15 +76,45 @@ python3 jit_extract.py
 
 # Build C++ binary `./build/mnist`
 mkdir build && cd build
-cmake ..
+cmake .. -DTARGET=mnist
 make
 ```
 
-## Make inference with the binary
+**3. Make inference with the binary**
 
 ```bash
 # In repo base dir
 ./build/mnist jit_module.pth six.jpg
 
 # Output: The number is: 6
+```
+
+## YOLOv5
+
+**1. Build binary**
+
+```bash
+# In repo base dir
+
+# Build C++ binary `./build/mnist`
+mkdir build && cd build
+cmake .. -DTARGET=yolov5
+make
+```
+
+**2. Export TorchScript module**
+
+```
+# In YOLOv5 base dir
+python export.py --weights yolov5s.pt --img 640 --batch 1
+
+# Then copy the yolov5s.torchscript to base dir of this repo
+```
+
+**3. Make inference with the binary**
+
+```bash
+# In base dir
+
+./build/yolov5 yolov5s.torchscript bus.jpg
 ```
